@@ -1,120 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSL WebSocket Test Client</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        #status {
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            background-color: #f0f0f0;
-        }
-        #controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 8px;
-        }
-        button {
-            padding: 8px 16px;
-            cursor: pointer;
-        }
-        #log {
-            border: 1px solid #ccc;
-            height: 250px;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: #fafafa;
-            font-family: monospace;
-        }
-        .sent { color: #0066cc; }
-        .received { color: #008800; }
-        .system { color: #888888; font-style: italic; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Personal portfolio of Zandrew I. Morano, Junior IT student and AI enthusiast.">
+  <title>Zandrew I. Morano | Portfolio</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --card: #1b1b1f;
+      --text: #E0E0E0;
+      --muted: #9a9aa3;
+      --cyan: #00E5FF;
+      --purple: #7C4DFF;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Hero */
+    .hero { text-align: center; padding: 44px 28px; }
+
+    .avatar {
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      box-shadow: 0 0 28px rgba(124, 77, 255, 0.45);
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 5vw, 2.6rem);
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .tagline { color: var(--muted); margin-top: 6px; font-size: 1.05rem; }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2::before {
+      content: "";
+      width: 4px;
+      height: 1.1em;
+      border-radius: 2px;
+      background: var(--purple);
+    }
+
+    p { color: var(--text); }
+
+    .trivia {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--cyan);
+      background: rgba(0, 229, 255, 0.06);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 0.95rem;
+    }
+
+    .trivia strong { color: var(--cyan); }
+
+    /* Skills */
+    .skills { list-style: none; display: grid; gap: 14px; }
+
+    .skills li {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .skills h3 { font-size: 1rem; color: var(--purple); margin-bottom: 4px; }
+    .skills p { font-size: 0.95rem; color: var(--text); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+    .tag {
+      font-size: 0.82rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* Projects */
+    .project {
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(124, 77, 255, 0.35);
+      background: rgba(124, 77, 255, 0.07);
+    }
+
+    .project h3 { font-size: 1.05rem; }
+    .project span { color: var(--muted); font-size: 0.9rem; }
+
+    /* Contact */
+    .btn {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 11px 22px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--bg);
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 229, 255, 0.3);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-top: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding-top: 28px; }
+      .card { padding: 20px; }
+    }
+  </style>
 </head>
 <body>
+  <main class="container">
 
-    <h2>BSL WebSocket Client</h2>
-    <div id="status">Status: Connecting...</div>
+    <header class="card hero">
+      <div class="avatar" aria-hidden="true">ZM</div>
+      <h1>Zandrew I. Morano</h1>
+      <p class="tagline">Junior IT Student &middot; AI Enthusiast</p>
+    </header>
 
-    <div id="controls">
-        <input type="text" id="msgInput" placeholder="Enter message..." disabled />
-        <button id="sendBtn" disabled>Send</button>
-    </div>
+    <section class="card" id="about">
+      <h2>Profile Summary</h2>
+      <p>
+        I am a Junior IT student and AI enthusiast passionate about leveraging artificial
+        intelligence to streamline workflows, accelerate learning, and build practical
+        applications. I actively integrate AI tools into my daily development process and
+        academic journey to push the boundaries of modern learning.
+      </p>
+      <div class="trivia">
+        <strong>&#128161; Quick Trivia:</strong> I used ChatGPT to generate custom practice
+        problems and step-by-step solutions to study for and successfully pass my Calculus exams!
+      </div>
+    </section>
 
-    <div id="log"></div>
+    <section class="card" id="skills">
+      <h2>Skills &amp; Technologies</h2>
+      <ul class="skills">
+        <li>
+          <h3>AI-Orchestrated Development</h3>
+          <p>Experienced in using modern AI models to generate, refine, and deploy full web pages and scripts without getting bogged down in low-level syntax.</p>
+        </li>
+        <li>
+          <h3>Logic Translation &amp; Prompting</h3>
+          <p>Capable of reading complex code structures and translating them into precise, plain-language prompts that guide AI outputs toward functional, clean results.</p>
+        </li>
+        <li>
+          <h3>Practical Troubleshooting</h3>
+          <p>Focused on iterative testing, reading terminal errors, and prompting for immediate fixes to keep projects moving forward smoothly.</p>
+        </li>
+        <li>
+          <h3>Tooling &amp; Environment</h3>
+          <div class="tags">
+            <span class="tag">Git</span>
+            <span class="tag">GitHub</span>
+            <span class="tag">VS Code</span>
+            <span class="tag">BSL Web Server</span>
+          </div>
+        </li>
+      </ul>
+    </section>
 
-    <script>
-        const wsUrl = "ws://localhost:8000";
-        const socket = new WebSocket(wsUrl);
+    <section class="card" id="projects">
+      <h2>Projects &amp; Achievements</h2>
+      <div class="project">
+        <h3>NaChozzz Business Simulation</h3>
+        <span>2024</span>
+      </div>
+    </section>
 
-        const statusDiv = document.getElementById("status");
-        const logDiv = document.getElementById("log");
-        const msgInput = document.getElementById("msgInput");
-        const sendBtn = document.getElementById("sendBtn");
+    <section class="card" id="contact">
+      <h2>Contact &amp; Social Links</h2>
+      <p style="margin-bottom: 12px;">Let's connect &mdash; find my work on GitHub:</p>
+      <a class="btn" href="https://github.com/ZforZan" target="_blank" rel="noopener noreferrer">github.com/ZforZan</a>
+    </section>
 
-        function appendLog(text, className) {
-            const entry = document.createElement("div");
-            entry.className = className;
-            entry.textContent = text;
-            logDiv.appendChild(entry);
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
+    <footer>
+      &copy; 2026 Zandrew I. Morano &middot; Served with the Bonezegei Scripting Language HTTP Web Server
+    </footer>
 
-        socket.onopen = function() {
-            statusDiv.textContent = "Status: Connected to " + wsUrl;
-            statusDiv.style.backgroundColor = "#d4edda";
-            statusDiv.style.color = "#155724";
-            msgInput.disabled = false;
-            sendBtn.disabled = false;
-            appendLog("[System] Handshake complete. WebSocket ready.", "system");
-        };
-
-        socket.onmessage = function(event) {
-            appendLog("[Server] " + event.data, "received");
-        };
-
-        socket.onclose = function(event) {
-            statusDiv.textContent = "Status: Disconnected";
-            statusDiv.style.backgroundColor = "#f8d7da";
-            statusDiv.style.color = "#721c24";
-            msgInput.disabled = true;
-            sendBtn.disabled = true;
-            appendLog("[System] Connection closed by server.", "system");
-        };
-
-        socket.onerror = function(error) {
-            appendLog("[Error] WebSocket error occurred.", "system");
-        };
-
-        function sendMessage() {
-            const text = msgInput.value.trim();
-            if (text.length > 0 && socket.readyState === WebSocket.OPEN) {
-                socket.send(text);
-                appendLog("[Client] " + text, "sent");
-                msgInput.value = "";
-            }
-        }
-
-        sendBtn.addEventListener("click", sendMessage);
-        msgInput.addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                sendMessage();
-            }
-        });
-    </script>
-
+  </main>
 </body>
 </html>
+
